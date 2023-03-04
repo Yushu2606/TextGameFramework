@@ -2,14 +2,14 @@
 
 namespace TextGameFramework.Types;
 
-internal struct Process
+internal readonly struct Process
 {
     [YamlMember(Alias = "description")]
-    public string Description { get; set; }
+    public required string Description { get; init; }
     [YamlMember(Alias = "achievements")]
-    public string[] Achievements { get; set; }
+    public string[] Achievements { get; init; }
     [YamlMember(Alias = "attributes")]
-    public Dictionary<string, int> Attributes { get; set; }
+    public Dictionary<string, int> Attributes { get; init; }
     [YamlMember(Alias = "options")]
-    public Dictionary<string, string> Options { get; set; }
+    public Dictionary<string, string> Options { get; init; }
 }

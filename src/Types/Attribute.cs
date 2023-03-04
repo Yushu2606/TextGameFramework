@@ -2,8 +2,8 @@
 
 namespace TextGameFramework.Types;
 
-internal struct Attribute
+internal readonly struct Attribute
 {
     [YamlMember(Alias = "name")]
-    public string Name { get; set; }
+    public required string Name { get; init; }
 }

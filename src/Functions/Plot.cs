@@ -4,7 +4,7 @@ using TextGameFramework.Utils;
 namespace TextGameFramework.Functions;
 internal static class Plot
 {
-    internal static void Handle(string key, params string[] args)
+    internal static void Perform(string key, params string[] args)
     {
         Console.Clear();
         Process process = PublicData.Gamedata.Processes[key];
@@ -13,30 +13,32 @@ internal static class Plot
             foreach (string achievementKey in process.Achievements)
             {
                 PublicData.gettedAchievement.Add(PublicData.Gamedata.Achievements[achievementKey].Name);
-                Handle("on_get_achievement", PublicData.Gamedata.Achievements[achievementKey].Name);
+                Perform("on_get_achievement", PublicData.Gamedata.Achievements[achievementKey].Name);
                 Thread.Sleep(PublicData.playSpeed * 4);
             }
         }
-        foreach (char text in string.Format(process.Description, args))
-        {
-            Console.Write(text);
-            Thread.Sleep(PublicData.playSpeed);
-        }
+        Console.Out.WritePerChar(string.Format(process.Description, args), PublicData.playSpeed);
         Console.WriteLine();
-        if (process.Options is null)
+        if (process.Options is null || process.Options.Count <= 0)
         {
             if (key is "end" or "on_get_achievement")
             {
                 return;
             }
             Thread.Sleep(PublicData.playSpeed * 20);
-            Handle("end", string.Join('，', PublicData.gettedAchievement));
+            Perform("end", string.Join('，', PublicData.gettedAchievement));
             Console.ReadKey(true);
+            return;
+        }
+        else if (process.Options.Count < 2)
+        {
+            Thread.Sleep(PublicData.playSpeed * 20);
+            Perform(process.Options.First().Value, args);
             return;
         }
         (_, int top) = Console.GetCursorPosition();
         Thread.Sleep(PublicData.playSpeed * 4);
-        ConsoleHelper.Write(process.Options.Keys.First(), PublicData.choosenForegroundColor, PublicData.choosenBackgroundColor, (default, top));
+        Console.Out.Rewrite(process.Options.Keys.First(), (default, top), PublicData.choosenForegroundColor, PublicData.choosenBackgroundColor);
         foreach (string option in process.Options.Keys.Skip(1))
         {
             Thread.Sleep(PublicData.playSpeed * 2);
@@ -54,7 +56,7 @@ internal static class Plot
                     {
                         break;
                     }
-                    ConsoleHelper.Write(process.Options.Keys.ToArray()[index], null, null, (default, top + index));
+                    Console.Out.Rewrite(process.Options.Keys.ToArray()[index], (default, top + index));
                     --index;
                     break;
                 case ConsoleKey.DownArrow:
@@ -62,15 +64,15 @@ internal static class Plot
                     {
                         break;
                     }
-                    ConsoleHelper.Write(process.Options.Keys.ToArray()[index], null, null, (default, top + index));
+                    Console.Out.Rewrite(process.Options.Keys.ToArray()[index], (default, top + index));
                     ++index;
                     break;
                 case ConsoleKey.Enter:
-                    Handle(process.Options.Values.ToArray()[index], args);
+                    Perform(process.Options.Values.ToArray()[index], args);
                     return;
                 default: continue;
             }
-            ConsoleHelper.Write(process.Options.Keys.ToArray()[index], PublicData.choosenForegroundColor, PublicData.choosenBackgroundColor, (default, top + index));
+            Console.Out.Rewrite(process.Options.Keys.ToArray()[index], (default, top + index), PublicData.choosenForegroundColor, PublicData.choosenBackgroundColor);
         }
     }
 }

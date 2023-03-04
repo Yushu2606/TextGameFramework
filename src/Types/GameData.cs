@@ -2,16 +2,16 @@
 
 namespace TextGameFramework.Types;
 
-internal struct GameData
+internal readonly struct GameData
 {
     [YamlMember(Alias = "name")]
-    public required string Name { get; set; }
+    public required string Name { get; init; }
     [YamlMember(Alias = "input")]
-    public string[] Input { get; set; }
+    public string[] Input { get; init; }
     [YamlMember(Alias = "processes")]
-    public required Dictionary<string, Process> Processes { get; set; }
+    public required Dictionary<string, Process> Processes { get; init; }
     [YamlMember(Alias = "achievements")]
-    public Dictionary<string, Achievement> Achievements { get; set; }
+    public Dictionary<string, Achievement> Achievements { get; init; }
     [YamlMember(Alias = "attributes")]
-    public Dictionary<string, Attribute> Attributes { get; set; }
+    public Dictionary<string, Attribute> Attributes { get; init; }
 }

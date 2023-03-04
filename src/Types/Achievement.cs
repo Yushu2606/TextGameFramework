@@ -2,8 +2,8 @@
 
 namespace TextGameFramework.Types;
 
-internal struct Achievement
+internal readonly struct Achievement
 {
     [YamlMember(Alias = "name")]
-    public string Name { get; set; }
+    public required string Name { get; init; }
 }

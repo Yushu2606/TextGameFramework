@@ -6,16 +6,19 @@ using YamlDotNet.Serialization;
 Console.InputEncoding = System.Text.Encoding.Unicode;
 
 Console.Title = PublicData.programName;
-Console.Write("请输入游戏文件目录：");
+Console.Write("游戏文件: ");
 string filePath = Console.ReadLine();
 Console.Clear();
+
 string fileText = File.ReadAllText(filePath);
 PublicData.Gamedata = new Deserializer().Deserialize<GameData>(fileText);
-Console.Title = $"{PublicData.Gamedata.Name} · 由{PublicData.programName}驱动";
+Console.Title = $"{PublicData.Gamedata.Name} · {PublicData.programName}";
+
 string[] @params = new string[PublicData.Gamedata.Input.Length];
 for (int i = 0; i < @params.Length; ++i)
 {
-    Console.Write($"请输入{PublicData.Gamedata.Input[i]}：");
+    Console.Write($"{PublicData.Gamedata.Input[i]}: ");
     @params[i] = Console.ReadLine();
 }
-Plot.Handle("main", @params);
+
+Plot.Perform("start", @params);
