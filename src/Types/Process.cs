@@ -1,4 +1,5 @@
-﻿using YamlDotNet.Serialization;
+﻿using System.Numerics;
+using YamlDotNet.Serialization;
 
 namespace TextGameFramework.Types;
 
@@ -9,7 +10,7 @@ internal readonly struct Process
     [YamlMember(Alias = "achievements")]
     public string[] Achievements { get; init; }
     [YamlMember(Alias = "attributes")]
-    public Dictionary<string, int> Attributes { get; init; }
+    public Dictionary<string, BigInteger> Attributes { get; init; }
     [YamlMember(Alias = "options")]
-    public Dictionary<string, string> Options { get; init; }
+    public Dictionary<string, object> Options { get; init; }
 }
