@@ -109,18 +109,14 @@ internal static class Plot
             {
                 switch (value)
                 {
-                    case string:
-                        if (PublicData.attributeLevels.TryGetValue(value.ToString(), out BigInteger bigint))
+                    case List<object>:
+                        foreach (string att in ((List<object>)value).Cast<string>())
                         {
-                            sum += (long)bigint;
-                        }
-                        else
-                        {
-                            sum += Convert.ToInt64(value);
+                            sum += PublicData.attributeLevels.TryGetValue(att.ToString(), out BigInteger bigint) ? (long)bigint : Convert.ToInt64(att);
                         }
                         break;
                     default:
-                        sum += (long)value;
+                        sum += Convert.ToInt64(value);
                         break;
                 }
             }
@@ -129,13 +125,18 @@ internal static class Plot
             foreach ((object optionKey, object weight) in dic)
             {
                 BigInteger testWeight = default;
-                testWeight = weight switch
+                switch (weight)
                 {
-                    string => PublicData.attributeLevels.TryGetValue(weight.ToString(), out BigInteger bigint)
-                                                            ? bigint
-                                                            : BigInteger.Parse(weight.ToString()),
-                    _ => (BigInteger)weight,
-                };
+                    case List<object>:
+                        foreach (string att in ((List<object>)weight).Cast<string>())
+                        {
+                            testWeight += PublicData.attributeLevels.TryGetValue(att.ToString(), out BigInteger bigint) ? bigint : BigInteger.Parse(att.ToString());
+                        }
+                        break;
+                    default:
+                        testWeight = BigInteger.Parse(weight.ToString());
+                        break;
+                }
                 if (rand >= (testedWeight += testWeight))
                 {
                     continue;
