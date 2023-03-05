@@ -5,5 +5,7 @@ namespace TextGameFramework.Types;
 internal readonly struct Attribute
 {
     [YamlMember(Alias = "name")]
-    public required string Name { get; init; }
+    public string Name { get; init; }
+    [YamlMember(Alias = "should_be_shown")]
+    public required bool ShouldBeShown { get; init; }
 }

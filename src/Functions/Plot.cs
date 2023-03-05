@@ -22,8 +22,12 @@ internal static class Plot
         {
             foreach ((string attributesKey, BigInteger level) in process.Attributes)
             {
-                PublicData.attributeLevels.TryGetValue(attributesKey, out var oldLevel);
+                PublicData.attributeLevels.TryGetValue(attributesKey, out BigInteger oldLevel);
                 PublicData.attributeLevels[attributesKey] = oldLevel + level;
+                if (!PublicData.Gamedata.Attributes[attributesKey].ShouldBeShown)
+                {
+                    continue;
+                }
                 Perform("on_level_up", PublicData.Gamedata.Attributes[attributesKey].Name, PublicData.attributeLevels[attributesKey]);
                 Thread.Sleep(PublicData.playSpeed * 4);
             }
@@ -44,10 +48,7 @@ internal static class Plot
         else if (process.Options.Count < 2)
         {
             Thread.Sleep(PublicData.playSpeed * 20);
-            if (process.Options.First().Value is string)
-            {
-                Perform(process.Options.First().Value.ToString(), args);
-            }
+            RandOption(process.Options.First().Value, key => Perform(key, args));
             return;
         }
         (_, int top) = Console.GetCursorPosition();
@@ -73,7 +74,7 @@ internal static class Plot
                     Console.Out.Rewrite(process.Options.Keys.ToArray()[index], (default, top + index));
                     if (index <= 0)
                     {
-                        index = process.Options.Count;
+                        index = process.Options.Count - 1;
                         break;
                     }
                     --index;
@@ -88,14 +89,60 @@ internal static class Plot
                     ++index;
                     break;
                 case ConsoleKey.Enter:
-                    if (process.Options.Values.ToArray()[index] is string)
-                    {
-                        Perform(process.Options.Values.ToArray()[index].ToString(), args);
-                    }
+                    RandOption(process.Options.Values.ToArray()[index], key => Perform(key, args));
                     return;
                 default: continue;
             }
             Console.Out.Rewrite(process.Options.Keys.ToArray()[index], (default, top + index), PublicData.choosenForegroundColor, PublicData.choosenBackgroundColor);
+        }
+    }
+    private static void RandOption(object option, Action<string> action)
+    {
+        if (option is string str)
+        {
+            action(str);
+        }
+        else if (option is Dictionary<object, object> dic)
+        {
+            long sum = default;
+            foreach (object value in dic.Values)
+            {
+                switch (value)
+                {
+                    case string:
+                        if (PublicData.attributeLevels.TryGetValue(value.ToString(), out BigInteger bigint))
+                        {
+                            sum += (long)bigint;
+                        }
+                        else
+                        {
+                            sum += Convert.ToInt64(value);
+                        }
+                        break;
+                    default:
+                        sum += (long)value;
+                        break;
+                }
+            }
+            long rand = Random.Shared.NextInt64(sum);
+            BigInteger testedWeight = default;
+            foreach ((object optionKey, object weight) in dic)
+            {
+                BigInteger testWeight = default;
+                testWeight = weight switch
+                {
+                    string => PublicData.attributeLevels.TryGetValue(weight.ToString(), out BigInteger bigint)
+                                                            ? bigint
+                                                            : BigInteger.Parse(weight.ToString()),
+                    _ => (BigInteger)weight,
+                };
+                if (rand >= (testedWeight += testWeight))
+                {
+                    continue;
+                }
+                action(optionKey.ToString());
+                return;
+            }
         }
     }
 }
