@@ -5,12 +5,12 @@ using TextGameFramework.Types;
 using TextGameFramework.Utils;
 using YamlDotNet.Serialization;
 
-Console.InputEncoding = Encoding.Unicode;
-Console.CursorVisible = false;
-
 Console.Title = Assembly.GetExecutingAssembly().GetName().Name;
-Console.Write("文件目录: ");
+
+Console.Write("文件路径: ");
+Console.InputEncoding = Encoding.Unicode;
 string filePath = args.Length is 1 ? args[0] : Console.ReadLine();
+Console.CursorVisible = false;
 Console.Clear();
 
 string fileText = File.ReadAllText(filePath);
