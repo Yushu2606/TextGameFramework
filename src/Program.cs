@@ -10,7 +10,6 @@ Console.Title = Assembly.GetExecutingAssembly().GetName().Name;
 Console.Write("文件路径: ");
 Console.InputEncoding = Encoding.Unicode;
 string filePath = args.Length is 1 ? args[0] : Console.ReadLine();
-Console.CursorVisible = false;
 Console.Clear();
 
 string fileText = File.ReadAllText(filePath);
@@ -19,6 +18,7 @@ Console.Title = $"{PublicData.Gamedata.Name} · {Console.Title}";
 
 if (PublicData.Gamedata.Input is null)
 {
+    Console.CursorVisible = false;
     Plot.Perform(PublicData.Gamedata.Init);
     return;
 }
@@ -29,4 +29,5 @@ for (int i = 0; i < @params.Length; ++i)
     @params[i] = Console.ReadLine();
 }
 
+Console.CursorVisible = false;
 Plot.Perform(PublicData.Gamedata.Init, @params);
