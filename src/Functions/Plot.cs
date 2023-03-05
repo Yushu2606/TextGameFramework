@@ -14,7 +14,11 @@ internal static class Plot
             foreach (string achievementKey in process.Achievements)
             {
                 PublicData.gettedAchievement.Add(PublicData.Gamedata.Achievements[achievementKey].Name);
-                Perform("on_get_achievement", PublicData.Gamedata.Achievements[achievementKey].Name);
+                if (PublicData.Gamedata.Achievements[achievementKey].MessageKey is null)
+                {
+                    continue;
+                }
+                Perform(PublicData.Gamedata.Achievements[achievementKey].MessageKey, PublicData.Gamedata.Achievements[achievementKey].Name);
                 Thread.Sleep(PublicData.playSpeed * 4);
             }
         }
@@ -24,11 +28,11 @@ internal static class Plot
             {
                 PublicData.attributeLevels.TryGetValue(attributesKey, out BigInteger oldLevel);
                 PublicData.attributeLevels[attributesKey] = oldLevel + level;
-                if (!PublicData.Gamedata.Attributes[attributesKey].ShouldBeShown)
+                if (PublicData.Gamedata.Attributes[attributesKey].MessageKey is null)
                 {
                     continue;
                 }
-                Perform("on_level_up", PublicData.Gamedata.Attributes[attributesKey].Name, PublicData.attributeLevels[attributesKey]);
+                Perform(PublicData.Gamedata.Attributes[attributesKey].MessageKey, PublicData.Gamedata.Attributes[attributesKey].Name, PublicData.attributeLevels[attributesKey]);
                 Thread.Sleep(PublicData.playSpeed * 4);
             }
         }
@@ -38,10 +42,6 @@ internal static class Plot
         Console.WriteLine();
         if (process.Options is null || process.Options.Count <= 0)
         {
-            if (key is "on_get_achievement" or "on_level_up")
-            {
-                return;
-            }
             Thread.Sleep(PublicData.playSpeed * 60);
             return;
         }

@@ -6,6 +6,6 @@ internal readonly struct Attribute
 {
     [YamlMember(Alias = "name")]
     public string Name { get; init; }
-    [YamlMember(Alias = "should_be_shown")]
-    public required bool ShouldBeShown { get; init; }
+    [YamlMember(Alias = "message_key")]
+    public string MessageKey { get; init; }
 }

@@ -1,23 +1,25 @@
-﻿using TextGameFramework.Functions;
+﻿using System.Reflection;
+using System.Text;
+using TextGameFramework.Functions;
 using TextGameFramework.Types;
 using TextGameFramework.Utils;
 using YamlDotNet.Serialization;
 
-Console.InputEncoding = System.Text.Encoding.Unicode;
+Console.InputEncoding = Encoding.Unicode;
 Console.CursorVisible = false;
 
-Console.Title = PublicData.programName;
-Console.Write("游戏文件: ");
+Console.Title = Assembly.GetExecutingAssembly().GetName().Name;
+Console.Write("文件目录: ");
 string filePath = args.Length is 1 ? args[0] : Console.ReadLine();
 Console.Clear();
 
 string fileText = File.ReadAllText(filePath);
 PublicData.Gamedata = new Deserializer().Deserialize<GameData>(fileText);
-Console.Title = $"{PublicData.Gamedata.Name} · {PublicData.programName}";
+Console.Title = $"{PublicData.Gamedata.Name} · {Console.Title}";
 
 if (PublicData.Gamedata.Input is null)
 {
-    Plot.Perform("start");
+    Plot.Perform(PublicData.Gamedata.Init);
     return;
 }
 string[] @params = new string[PublicData.Gamedata.Input.Length];
@@ -27,4 +29,4 @@ for (int i = 0; i < @params.Length; ++i)
     @params[i] = Console.ReadLine();
 }
 
-Plot.Perform("start", @params);
+Plot.Perform(PublicData.Gamedata.Init, @params);

@@ -8,6 +8,8 @@ internal readonly struct GameData
     public required string Name { get; init; }
     [YamlMember(Alias = "input")]
     public string[] Input { get; init; }
+    [YamlMember(Alias = "init")]
+    public required string Init { get; init; }
     [YamlMember(Alias = "processes")]
     public required Dictionary<string, Process> Processes { get; init; }
     [YamlMember(Alias = "achievements")]
