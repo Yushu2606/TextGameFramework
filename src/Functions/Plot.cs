@@ -5,62 +5,78 @@ using TextGameFramework.Utils;
 namespace TextGameFramework.Functions;
 internal static class Plot
 {
-    internal static void Perform(string key, params object[] args)
+    internal static void Perform(string key, bool isCancelled = true, params object[] args)
     {
-        Console.Clear();
         Process process = PublicData.Gamedata.Processes[key];
-        if (process.Achievements is not null)
+        int top = default;
+        bool isOutputing = true;
+        Console.Clear();
+        Task.Run(() =>
         {
-            foreach (string achievementKey in process.Achievements)
+            if (process.Achievements is not null)
             {
-                PublicData.gettedAchievement.Add(PublicData.Gamedata.Achievements[achievementKey].Name);
-                if (PublicData.Gamedata.Achievements[achievementKey].MessageKey is null)
+                foreach (string achievementKey in process.Achievements)
                 {
-                    continue;
+                    PublicData.gettedAchievement.Add(PublicData.Gamedata.Achievements[achievementKey].Name);
+                    if (PublicData.Gamedata.Achievements[achievementKey].MessageKey is null)
+                    {
+                        continue;
+                    }
+                    Perform(PublicData.Gamedata.Achievements[achievementKey].MessageKey, true, PublicData.Gamedata.Achievements[achievementKey].Name);
                 }
-                Perform(PublicData.Gamedata.Achievements[achievementKey].MessageKey, PublicData.Gamedata.Achievements[achievementKey].Name);
-                Thread.Sleep(PublicData.playSpeed * 4);
             }
-        }
-        if (process.Attributes is not null)
-        {
-            foreach ((string attributesKey, BigInteger level) in process.Attributes)
+            if (process.Attributes is not null)
             {
-                PublicData.attributeLevels.TryGetValue(attributesKey, out BigInteger oldLevel);
-                PublicData.attributeLevels[attributesKey] = oldLevel + level;
-                if (PublicData.Gamedata.Attributes[attributesKey].MessageKey is null)
+                foreach ((string attributesKey, BigInteger level) in process.Attributes)
                 {
-                    continue;
+                    PublicData.attributeLevels.TryGetValue(attributesKey, out BigInteger oldLevel);
+                    PublicData.attributeLevels[attributesKey] = oldLevel + level;
+                    if (PublicData.Gamedata.Attributes[attributesKey].MessageKey is null)
+                    {
+                        continue;
+                    }
+                    Perform(PublicData.Gamedata.Attributes[attributesKey].MessageKey, true, PublicData.Gamedata.Attributes[attributesKey].Name, PublicData.attributeLevels[attributesKey]);
                 }
-                Perform(PublicData.Gamedata.Attributes[attributesKey].MessageKey, PublicData.Gamedata.Attributes[attributesKey].Name, PublicData.attributeLevels[attributesKey]);
-                Thread.Sleep(PublicData.playSpeed * 4);
             }
-        }
-        List<object> newArgs = args.ToList();
-        newArgs.Add(string.Join(", ", PublicData.gettedAchievement));
-        Console.Out.WritePerChar(string.Format(process.Description, newArgs.ToArray()), PublicData.playSpeed);
-        Console.WriteLine();
-        if (process.Options is null || process.Options.Count <= 0)
-        {
-            Thread.Sleep(PublicData.playSpeed * 60);
-            return;
-        }
-        else if (process.Options.Count < 2)
-        {
-            Thread.Sleep(PublicData.playSpeed * 20);
-            RandOption(process.Options.First().Value, key => Perform(key, args));
-            return;
-        }
-        (_, int top) = Console.GetCursorPosition();
-        Thread.Sleep(PublicData.playSpeed * 4);
-        Console.Out.Rewrite(process.Options.Keys.First(), (default, top), PublicData.choosenForegroundColor, PublicData.choosenBackgroundColor);
-        foreach (string option in process.Options.Keys.Skip(1))
-        {
-            Thread.Sleep(PublicData.playSpeed * 2);
+            List<object> newArgs = args.ToList();
+            newArgs.Add(string.Join(", ", PublicData.gettedAchievement));
+            lock (Console.Out)
+            {
+                Console.Out.WritePerChar(string.Format(process.Description, newArgs.ToArray()), PublicData.playSpeed);
+            }
+            if (process.Options is null || process.Options.Count <= 0)
+            {
+                Thread.Sleep(PublicData.playSpeed * 60);
+                return;
+            }
+            else if (process.Options.Count < 2)
+            {
+                Thread.Sleep(PublicData.playSpeed * 20);
+                RandOption(process.Options.First().Value, key => Perform(key, default, args));
+                return;
+            }
             Console.WriteLine();
-            Console.Write(option);
+            (_, top) = Console.GetCursorPosition();
+            Thread.Sleep(PublicData.playSpeed * 4);
+            Console.Out.Rewrite(process.Options.Keys.First(), (default, top), PublicData.choosenForegroundColor, PublicData.choosenBackgroundColor);
+            foreach (string option in process.Options.Keys.Skip(1))
+            {
+                Thread.Sleep(PublicData.playSpeed * 2);
+                Console.WriteLine();
+                Console.Write(option);
+            }
+            isOutputing = false;
+        }, CancellationToken.None);
+        while (isOutputing && !isCancelled)
+        {
+            Thread.Yield();
+        }
+        if (isCancelled)
+        {
+            return;
         }
         int index = 0;
+        Console.CursorVisible = false;
         while (true)
         {
             ConsoleKeyInfo inputKey = Console.ReadKey(true);
@@ -85,7 +101,8 @@ internal static class Plot
                     ++index;
                     break;
                 case ConsoleKey.Enter:
-                    RandOption(process.Options.Values.ToArray()[index], key => Perform(key, args));
+                    Console.CursorVisible = true;
+                    RandOption(process.Options.Values.ToArray()[index], key => Perform(key, default, args));
                     return;
                 default: continue;
             }

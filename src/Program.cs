@@ -18,7 +18,6 @@ Console.Title = $"{PublicData.Gamedata.Name} · {Console.Title}";
 
 if (PublicData.Gamedata.Input is null)
 {
-    Console.CursorVisible = false;
     Plot.Perform(PublicData.Gamedata.Init);
     return;
 }
@@ -29,5 +28,4 @@ for (int i = 0; i < @params.Length; ++i)
     @params[i] = Console.ReadLine();
 }
 
-Console.CursorVisible = false;
-Plot.Perform(PublicData.Gamedata.Init, @params);
+Plot.Perform(PublicData.Gamedata.Init, default, @params);
