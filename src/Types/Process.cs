@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+using System.Numerics;
 using YamlDotNet.Serialization;
 
 namespace TextGameFramework.Types;

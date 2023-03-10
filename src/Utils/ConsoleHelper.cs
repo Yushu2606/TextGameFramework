@@ -1,4 +1,4 @@
-﻿namespace TextGameFramework.Utils;
+namespace TextGameFramework.Utils;
 
 internal static class ConsoleExtension
 {
