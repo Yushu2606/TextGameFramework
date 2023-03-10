@@ -2,7 +2,7 @@
 
 namespace TextGameFramework.Types;
 
-internal readonly struct Attribute
+internal readonly record struct Attribute
 {
     [YamlMember(Alias = "name")]
     public string Name { get; init; }

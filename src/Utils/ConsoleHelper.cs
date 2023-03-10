@@ -1,4 +1,5 @@
 ﻿namespace TextGameFramework.Utils;
+
 internal static class ConsoleExtension
 {
     internal static void Rewrite(this TextWriter writer, string text, (int Left, int Top) pos = default, ConsoleColor? foregroundColor = null, ConsoleColor? backgroundColor = null)

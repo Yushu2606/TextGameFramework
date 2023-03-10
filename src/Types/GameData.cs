@@ -1,8 +1,9 @@
-﻿using YamlDotNet.Serialization;
+﻿using System.Numerics;
+using YamlDotNet.Serialization;
 
 namespace TextGameFramework.Types;
 
-internal readonly struct GameData
+internal record GameData
 {
     [YamlMember(Alias = "name")]
     public required string Name { get; init; }
@@ -16,4 +17,8 @@ internal readonly struct GameData
     public Dictionary<string, Achievement> Achievements { get; init; }
     [YamlMember(Alias = "attributes")]
     public Dictionary<string, Attribute> Attributes { get; init; }
+    internal KeyValuePair<string, object>[] CurrectOptions { get; set; }
+    internal List<string> GettedAchievement { get; set; } = new();
+    internal Dictionary<string, BigInteger> AttributeLevels { get; set; } = new();
+    internal object[] Arguments { get; set; }
 }

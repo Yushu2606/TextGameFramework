@@ -3,7 +3,7 @@ using YamlDotNet.Serialization;
 
 namespace TextGameFramework.Types;
 
-internal readonly struct Process
+internal record Process
 {
     [YamlMember(Alias = "description")]
     public required string Description { get; init; }
