@@ -3,14 +3,12 @@ using YamlDotNet.Serialization;
 
 namespace TextGameFramework.Types;
 
-internal record Process
-{
-    [YamlMember(Alias = "description")]
-    public required string Description { get; init; }
-    [YamlMember(Alias = "achievements")]
-    public string[] Achievements { get; init; }
-    [YamlMember(Alias = "attributes")]
-    public Dictionary<string, BigInteger> Attributes { get; init; }
-    [YamlMember(Alias = "options")]
-    public Dictionary<string, object> Options { get; init; }
-}
+internal record Process(
+    [property: YamlMember(Alias = "description")]
+    string Description,
+    [property: YamlMember(Alias = "achievements")]
+    string[]? Achievements,
+    [property: YamlMember(Alias = "attributes")]
+    Dictionary<string, BigInteger>? Attributes,
+    [property: YamlMember(Alias = "options")]
+    Dictionary<string, object>? Options);

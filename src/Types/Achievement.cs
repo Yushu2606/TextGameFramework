@@ -2,10 +2,7 @@ using YamlDotNet.Serialization;
 
 namespace TextGameFramework.Types;
 
-internal readonly record struct Achievement
-{
-    [YamlMember(Alias = "name")]
-    public required string Name { get; init; }
-    [YamlMember(Alias = "message_key")]
-    public required string MessageKey { get; init; }
-}
+internal record Achievement(
+    [property: YamlMember(Alias = "name")] string Name,
+    [property: YamlMember(Alias = "message_key")]
+    string? MessageKey);
