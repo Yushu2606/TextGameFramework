@@ -1,14 +1,14 @@
 using System.Numerics;
-using YamlDotNet.Serialization;
+using VYaml.Annotations;
 
 namespace TextGameFramework.Types;
 
 internal record Process(
-    [property: YamlMember(Alias = "description")]
+    [property: YamlMember("description")]
     string Description,
-    [property: YamlMember(Alias = "achievements")]
+    [property: YamlMember("achievements")]
     string[]? Achievements,
-    [property: YamlMember(Alias = "attributes")]
+    [property: YamlMember("attributes")]
     Dictionary<string, BigInteger>? Attributes,
-    [property: YamlMember(Alias = "options")]
+    [property: YamlMember("options")]
     Dictionary<string, object>? Options);

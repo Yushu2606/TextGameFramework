@@ -1,15 +1,15 @@
-using YamlDotNet.Serialization;
+using VYaml.Annotations;
 
 namespace TextGameFramework.Types;
 
 internal record GameData(
-    [property: YamlMember(Alias = "name")] string Name,
-    [property: YamlMember(Alias = "input")]
+    [property: YamlMember("name")] string Name,
+    [property: YamlMember("input")]
     string[]? Input,
-    [property: YamlMember(Alias = "init")] string Init,
-    [property: YamlMember(Alias = "processes")]
+    [property: YamlMember("init")] string Init,
+    [property: YamlMember("processes")]
     Dictionary<string, Process> Processes,
-    [property: YamlMember(Alias = "achievements")]
+    [property: YamlMember("achievements")]
     Dictionary<string, Achievement>? Achievements,
-    [property: YamlMember(Alias = "attributes")]
+    [property: YamlMember("attributes")]
     Dictionary<string, Attribute>? Attributes);

@@ -1,8 +1,8 @@
-using YamlDotNet.Serialization;
+using VYaml.Annotations;
 
 namespace TextGameFramework.Types;
 
 internal record Attribute(
-    [property: YamlMember(Alias = "name")] string Name,
-    [property: YamlMember(Alias = "message_key")]
+    [property: YamlMember("name")] string Name,
+    [property: YamlMember("message_key")]
     string? MessageKey);

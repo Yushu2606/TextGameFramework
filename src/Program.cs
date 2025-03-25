@@ -3,7 +3,7 @@ using System.Text;
 using TextGameFramework.Functions;
 using TextGameFramework.Types;
 using TextGameFramework.Utils;
-using YamlDotNet.Serialization;
+using VYaml.Serialization;
 
 Console.Title = Assembly.GetExecutingAssembly().GetName().Name!;
 
@@ -14,8 +14,8 @@ if (args.Length <= 0)
     args = [Console.ReadLine()];
 }
 
-string fileText = File.ReadAllText(args[0]);
-Shared.GameData = new Deserializer().Deserialize<GameData>(fileText);
+FileStream fileStream = File.OpenRead(args[0]);
+Shared.GameData = await YamlSerializer.DeserializeAsync<GameData>(fileStream);
 Console.Title =
     $"{Shared.GameData.Name}{(OperatingSystem.IsWindows() ? $" · {Console.Title}" : Assembly.GetExecutingAssembly().GetName().Name)}";
 
