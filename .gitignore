@@ -363,4 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # TextGameFramework game file
-*.tgm
+*.tgf
